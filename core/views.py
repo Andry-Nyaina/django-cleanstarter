@@ -3,4 +3,5 @@ from django.http import HttpResponse
 
 # Create your views here.
 def home(request):
-    return HttpResponse("Bienvenue sur Django CleanStarter 🚀")
+    #return HttpResponse("Bienvenue sur Django CleanStarter 🚀")
+    return render(request, "core/home.html")
