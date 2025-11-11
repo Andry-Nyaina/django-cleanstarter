@@ -25,27 +25,27 @@ L’objectif est de disposer d’une structure **scalable**, **sécurisée** et 
 ---
 
 ## ⚙️ Structure du projet
-django-cleanstarter/
-├── config/
-│ ├── settings/
-│ │ ├── base.py
-│ │ ├── dev.py
-│ │ ├── prod.py
-│ └── urls.py
-│
-├── core/
-│ ├── templates/
-│ │ └── core/
-│ │ └── home.html
-│ ├── static/
-│ │ └── core/
-│ │ └── style.css
-│ ├── views.py
-│ └── urls.py
-│
-├── manage.py
-├── .env
-└── .gitignore
+django-cleanstarter/<br>
+├── config/<br>
+│ ├── settings/<br>
+│ │ ├── base.py<br>
+│ │ ├── dev.py<br>
+│ │ ├── prod.py<br>
+│ └── urls.py<br>
+│<br>
+├── core/<br>
+│ ├── templates/<br>
+│ │ └── core/<br>
+│ │ └── home.html<br>
+│ ├── static/<br>
+│ │ └── core/<br>
+│ │ └── style.css<br>
+│ ├── views.py<br>
+│ └── urls.py<br>
+│<br>
+├── manage.py<br>
+├── .env<br>
+└── .gitignore<br>
 
 ---
 
