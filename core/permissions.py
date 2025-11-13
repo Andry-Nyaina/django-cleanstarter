@@ -1,31 +1,15 @@
 from rest_framework import permissions
 
-class IsAdminOrReadOnly(permissions.BasePermission):
+class IsAdminOrSelf(permissions.BasePermission):
     """
-    Lecture (GET, HEAD, OPTIONS) autorisée à tous.
-    Modification (POST, PUT, PATCH, DELETE) réservée aux admins (is_staff).
+    Permission personnalisée :
+    - L'utilisateur admin (is_staff=True) peut tout faire.
+    - L'utilisateur normal ne peut accéder qu’à son propre profil.
     """
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return bool(request.user and request.user.is_authenticated and request.user.is_staff)
 
-
-class IsOwnerOrReadOnly(permissions.BasePermission):
-    """
-    Permet la lecture à tous (ou aux utilisateurs authentifiés si on combine),
-    mais autorise modification/suppression uniquement au propriétaire de l'objet.
-    Attendu : l'objet a un attribut `owner` ou `user` référant à l'User.
-    """
     def has_object_permission(self, request, view, obj):
-        # Lecture autorisée
-        if request.method in permissions.SAFE_METHODS:
+        # Si admin → accès complet
+        if request.user and request.user.is_staff:
             return True
-
-        # Si l'objet a un champ 'owner', utilise-le ; sinon essaye 'user'
-        owner = getattr(obj, 'owner', None) or getattr(obj, 'user', None)
-        if owner is None:
-            # Si pas de champ propriétaire, on refuse modification (pour être sûr)
-            return False
-
-        return bool(request.user and request.user.is_authenticated and owner == request.user)
+        # Sinon → accès limité à soi-même
+        return obj == request.user

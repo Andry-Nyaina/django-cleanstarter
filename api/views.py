@@ -4,11 +4,21 @@ from .models import Product
 from .serializers import ProductSerializer, RegisterSerializer
 from .utils import success_response, error_response
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
+from core.permissions import IsAdminOrSelf
+from .serializers import RegisterSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrSelf]
 
 # Create your views here.
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
