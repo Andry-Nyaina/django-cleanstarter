@@ -4,7 +4,7 @@ from .models import Product
 from .serializers import ProductSerializer, RegisterSerializer
 from .utils import success_response, error_response
 from django.contrib.auth.models import User
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from django.contrib.auth.models import User
 from core.permissions import IsAdmin, IsSelf, IsAdminOrSelf, DenyDeleteSelf
 from .serializers import RegisterSerializer
@@ -28,6 +28,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny] 
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

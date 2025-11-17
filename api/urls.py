@@ -12,7 +12,10 @@ router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
     path('', include(router.urls)),
+    #chemins pour l’API
     path('auth/register/', RegisterView.as_view(), name='register'),
+    #chemins pour le test
+    path('register/', RegisterView.as_view(), name='register'),
     path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
