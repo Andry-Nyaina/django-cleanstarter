@@ -54,7 +54,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         # PUT / PATCH : modifier un user
         if self.action in ["update", "partial_update"]:
-            return [IsSelf()]
+            return [IsAdminOrSelf()]
 
         # DELETE
         if self.action == "destroy":

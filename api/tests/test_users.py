@@ -50,4 +50,28 @@ def test_user_retrieve_permissions():
     assert response.status_code == 403
 
 
+@pytest.mark.django_db
+def test_user_update_permissions():
+    admin = User.objects.create_superuser(username="admin", password="admin123")
+    user1 = User.objects.create_user(username="user1", password="user123")
+    user2 = User.objects.create_user(username="user2", password="user123")
+
+    client = APIClient()
+
+    # USER1 → peut modifier son propre profil
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {get_token_for_user(user1)}")
+    response = client.patch(f"/api/users/{user1.id}/", {"email": "new@mail.com"}, format="json")
+    assert response.status_code == 200
+
+    # USER1 → NE PEUT PAS modifier user2
+    response = client.patch(f"/api/users/{user2.id}/", {"email": "x@mail.com"}, format="json")
+    assert response.status_code == 403
+
+    # ADMIN → peut modifier user2
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {get_token_for_user(admin)}")
+    response = client.patch(f"/api/users/{user2.id}/", {"email": "adminchange@mail.com"}, format="json")
+    assert response.status_code == 200
+
+
+
 
