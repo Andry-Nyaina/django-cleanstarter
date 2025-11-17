@@ -6,7 +6,7 @@ from .utils import success_response, error_response
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from django.contrib.auth.models import User
-from core.permissions import IsAdmin, IsSelf, IsAdminOrSelf, DenyDeleteSelf
+from core.permissions import *
 from .serializers import RegisterSerializer
 
 
@@ -41,6 +41,7 @@ class RegisterView(generics.CreateAPIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [IsAdminUserOnly]
 
     def get_permissions(self):
         # GET /api/users/ (liste)

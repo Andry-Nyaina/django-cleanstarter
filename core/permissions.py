@@ -36,3 +36,8 @@ class DenyDeleteSelf(permissions.BasePermission):
         if request.method == "DELETE" and obj == request.user:
             return False
         return True
+
+
+class IsAdminUserOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_superuser
