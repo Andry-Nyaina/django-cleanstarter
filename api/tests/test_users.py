@@ -73,5 +73,29 @@ def test_user_update_permissions():
     assert response.status_code == 200
 
 
+@pytest.mark.django_db
+def test_user_delete_permissions():
+    admin = User.objects.create_superuser(username="admin", password="admin123")
+    user1 = User.objects.create_user(username="user1", password="user123")
+    user2 = User.objects.create_user(username="user2", password="user123")
+
+    client = APIClient()
+
+    # USER1 → interdit
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {get_token_for_user(user1)}")
+    res = client.delete(f"/api/users/{user2.id}/")
+    assert res.status_code == 403
+
+    # ADMIN → peut supprimer user1
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {get_token_for_user(admin)}")
+    res = client.delete(f"/api/users/{user1.id}/")
+    assert res.status_code == 204
+
+    # ADMIN → NE PEUT PAS se supprimer lui-même
+    res = client.delete(f"/api/users/{admin.id}/")
+    assert res.status_code == 403
+
+
+
 
 
