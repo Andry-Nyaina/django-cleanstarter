@@ -11,8 +11,8 @@ def get_token_for_user(user):
 
 @pytest.mark.django_db
 def test_user_list_permissions():
-    admin = User.objects.create_superuser(username="admin", password="#Draken280403.")
-    user = User.objects.create_user(username="abcd", password="abcd")
+    admin = User.objects.create_superuser(username="admin", password="admin1234")
+    user = User.objects.create_user(username="user", password="user1234")
 
     client = APIClient()
 
@@ -25,5 +25,29 @@ def test_user_list_permissions():
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {get_token_for_user(user)}")
     response = client.get("/api/users/")
     assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_user_retrieve_permissions():
+    admin = User.objects.create_superuser(username="admin", password="admin123")
+    user1 = User.objects.create_user(username="user1", password="user123")
+    user2 = User.objects.create_user(username="user2", password="user123")
+
+    client = APIClient()
+
+    # ADMIN → peut voir user2
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {get_token_for_user(admin)}")
+    response = client.get(f"/api/users/{user2.id}/")
+    assert response.status_code == 200
+
+    # USER1 → peut voir son profil
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {get_token_for_user(user1)}")
+    response = client.get(f"/api/users/{user1.id}/")
+    assert response.status_code == 200
+
+    # USER1 → ne peut PAS voir user2
+    response = client.get(f"/api/users/{user2.id}/")
+    assert response.status_code == 403
+
 
 
