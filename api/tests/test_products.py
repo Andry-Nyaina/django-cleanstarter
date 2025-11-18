@@ -1,22 +1,68 @@
 import pytest
 from rest_framework.test import APIClient
-from django.urls import reverse
+from django.contrib.auth.models import User
 from api.models import Product
 
 @pytest.mark.django_db
-class TestProductsAPI:
+def test_list_products():
+    # 1) Préparer un utilisateur + token
+    user = User.objects.create_user(username="test", password="pass123")
+    client = APIClient()
+    client.force_authenticate(user)
 
-    def setup_method(self):
-        self.client = APIClient()
+    # 2) Créer des produits en base
+    Product.objects.create(name="P1", price=1000)
+    Product.objects.create(name="P2", price=2000)
 
-    def test_list_products(self):
-        assert True  # temporaire
+    # 3) Appeler l’endpoint
+    response = client.get("/api/products/")
 
-    def test_create_product(self):
-        assert True  # temporaire
+    # 4) Vérifier
+    assert response.status_code == 200
+    assert len(response.data) == 2
 
-    def test_edit_product(self):
-        assert True  # temporaire
 
-    def test_delete_product(self):
-        assert True  # temporaire
+@pytest.mark.django_db
+def test_create_product():
+    user = User.objects.create_user(username="test", password="pass123")
+    client = APIClient()
+    client.force_authenticate(user)
+
+    payload = {"name": "Laptop", "price": 3500}
+
+    response = client.post("/api/products/", payload, format="json")
+
+    assert response.status_code == 201
+    assert response.data["message"] == "Produit créé avec succès"
+    assert response.data["data"]["name"] == "Laptop"
+
+
+@pytest.mark.django_db
+def test_update_product():
+    user = User.objects.create_user(username="test", password="pass123")
+    client = APIClient()
+    client.force_authenticate(user)
+
+    product = Product.objects.create(name="Old", price=100)
+
+    payload = {"name": "Updated", "price": 500}
+
+    response = client.put(f"/api/products/{product.id}/", payload, format="json")
+
+    assert response.status_code == 200
+    assert response.data["data"]["name"] == "Updated"
+    assert float(response.data["data"]["price"]) == 500
+
+
+@pytest.mark.django_db
+def test_delete_product():
+    user = User.objects.create_user(username="test", password="pass123")
+    client = APIClient()
+    client.force_authenticate(user)
+
+    product = Product.objects.create(name="DeleteMe", price=200)
+
+    response = client.delete(f"/api/products/{product.id}/")
+
+    assert response.status_code == 204
+    assert Product.objects.count() == 0

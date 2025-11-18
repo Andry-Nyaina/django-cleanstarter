@@ -24,6 +24,23 @@ class ProductViewSet(viewsets.ModelViewSet):
         return error_response(serializer.errors, status=400)
     
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+
+        if serializer.is_valid():
+            product = serializer.save()
+            return success_response(
+                ProductSerializer(product).data,
+                "Produit mis à jour avec succès",
+                status=200
+            )
+
+        return error_response(serializer.errors, status=400)
+
+    
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
