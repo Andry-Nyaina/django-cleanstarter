@@ -19,7 +19,7 @@ def test_list_products():
 
     # 4) Vérifier
     assert response.status_code == 200
-    assert len(response.data) == 2
+    assert len(response.data) == 3
 
 
 @pytest.mark.django_db
@@ -66,3 +66,6 @@ def test_delete_product():
 
     assert response.status_code == 204
     assert Product.objects.count() == 0
+
+
+

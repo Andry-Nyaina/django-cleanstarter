@@ -38,9 +38,25 @@ class ProductViewSet(viewsets.ModelViewSet):
             )
 
         return error_response(serializer.errors, status=400)
-
     
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return success_response(serializer.data, "Liste des produits", status=200)
+    
+
+    def retrieve(self, request, *args, **kwargs):
+        product = self.get_object()
+        serializer = self.get_serializer(product)
+        return success_response(serializer.data, "Produit récupéré avec succès")
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return success_response(message="Produit supprimé avec succès", status=204)
+
+    
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
