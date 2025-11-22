@@ -1,4 +1,3 @@
-import pytest
 from api.models import Product
 from api.tests.conftest import *
 
