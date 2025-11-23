@@ -19,12 +19,6 @@ def authenticated_user(api_client, db):
     api_client.force_authenticate(user)
     return api_client, user
 
- 
-@pytest.fixture
-def api_client():
-    """APIClient sans authentification — réutilisable"""
-    return APIClient()
-
 
 @pytest.fixture
 def create_user(db):
